@@ -1,0 +1,22 @@
+name: Release crate
+
+# Tags: hmip-rs-v<semver>
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    if: startsWith(github.ref_name, 'hmip-rs-v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Check tag against crate version
+        run: |
+          version="$(cargo metadata --no-deps --format-version 1 --locked | jq -r '.packages[] | select(.name == "hmip-rs") | .version')"
+          [ "hmip-rs-v$version" = "$GITHUB_REF_NAME" ] || { echo "tag $GITHUB_REF_NAME does not match crate version $version"; exit 1; }
+      - run: cargo test -p hmip-rs --locked
+      - run: cargo publish -p hmip-rs --locked
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}

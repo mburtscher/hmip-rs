@@ -1,0 +1,30 @@
+[package]
+name = "hmip-rs"
+description = "Build plugins for the HomematicIP Home Control Unit: Connect API websocket types and a base plugin implementation."
+readme = "README.md"
+keywords = ["homematic", "homematicip", "hcu", "smart-home", "websocket"]
+categories = ["api-bindings", "network-programming"]
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+documentation = "https://docs.rs/hmip-rs"
+
+[dependencies]
+futures-util = "0.3"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+serde.workspace = true
+serde_json.workspace = true
+thiserror = "2"
+tokio = { workspace = true, features = ["rt", "macros", "sync", "time", "fs"] }
+tokio-tungstenite = { version = "0.30", features = ["rustls-tls-webpki-roots"] }
+tracing.workspace = true
+uuid = { version = "1", features = ["v4", "serde"] }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt-multi-thread", "net", "macros", "time"] }
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]

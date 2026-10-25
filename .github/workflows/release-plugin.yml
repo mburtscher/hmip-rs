@@ -1,0 +1,26 @@
+name: Release plugin
+
+# Tags: <plugin>-v<semver>, e.g. fronius-v0.1.0 (plugin = directory below plugins/).
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    if: contains(github.ref_name, '-v') && !startsWith(github.ref_name, 'hmip-rs-v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Parse tag
+        run: |
+          echo "PLUGIN=${GITHUB_REF_NAME%%-v*}" >> "$GITHUB_ENV"
+          echo "VERSION=${GITHUB_REF_NAME##*-v}" >> "$GITHUB_ENV"
+      - name: Build image and archive
+        run: scripts/build-plugin.sh "$PLUGIN" --version "$VERSION"
+      - name: Upload archive to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "$GITHUB_REF_NAME" dist/*.tar.gz --clobber

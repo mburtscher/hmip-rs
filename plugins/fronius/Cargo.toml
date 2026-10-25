@@ -1,0 +1,29 @@
+[package]
+name = "fronius"
+description = "HomematicIP Home Control Unit plugin for Fronius SYMO Gen24 inverters (Solar API)."
+publish = false
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+# Read by scripts/build-plugin.sh to build the `de.eq3.hmip.plugin.metadata` image label.
+[package.metadata.hcu]
+plugin-id = "xyz.burtscher.homematic.plugin.fronius"
+issuer = "Matthias Burtscher"
+hcu-min-version = "1.4.7"
+scope = "LOCAL"
+friendly-name = { de = "Fronius Plugin", en = "Fronius Plugin" }
+description = { de = "Adds support for Fronius SYMO Gen24 inverters.", en = "Adds support for Fronius SYMO Gen24 inverters." }
+logs-enabled = true
+
+[dependencies]
+hmip-rs.workspace = true
+reqwest = { version = "0.12", default-features = false, features = ["json"] }
+serde.workspace = true
+serde_json.workspace = true
+tokio = { workspace = true, features = ["rt-multi-thread", "macros", "time", "fs", "sync"] }
+tracing.workspace = true
+tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt"] }
